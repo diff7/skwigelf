@@ -2,17 +2,20 @@
 
 import requests
 import re
+from random import randint
 from datetime import datetime
 import time
 import telebot
 import tokens
+import conf
 
 
 token = tokens.token
 chat_id = tokens.chat_id
 
 
-dir_path = '/home/donkey/rockBot'
+#dir_path = '/home/donkey/rockBot'
+dir_path = './'
 
 bot = telebot.TeleBot(token)
 
@@ -87,6 +90,9 @@ def get_event_descriptions_by_id(group_ids, n = 30):
         if 'finish_date' in description['response'][idx]:
             time=datetime.utcfromtimestamp(description['response'][idx]['finish_date']).strftime('%Y-%m-%d %H:%M:%S')
             items['finish_date'] = time
+            
+        if 'name' in description['response'][idx]:
+            items['name'] = description['response'][idx]['name']
         descriptions[ids_list[idx]] = items
     return descriptions
 
@@ -94,22 +100,33 @@ def get_event_descriptions_by_id(group_ids, n = 30):
 
 def make_records(description):
     texts = []
+    min_post_len = conf.min_post_len
+    max_post_len_sentences = conf.max_post_len_sentences
     for key in description:
         adress = ''
         start_date = ''
         end_date = ''
         link='vk.com/event' + key
-        text ='{} \n\n'.format(description[key]['description'])
+        
+        if 'name' in  description[key]:
+            text = '{}: "{}" \n\n'.format(conf.start_phrases[randint(0,2)],description[key]['name'])
+        else:
+            text = ''
+        
+        text +='{} '.format('.'.join(description[key]['description'].split('.')[:max_post_len_sentences]))
+        text += ' Продолжение по ссылке : {} \n\n'.format(link)
+        if len(text.split()) < min_post_len:
+            continue
         if 'start_date' in description[key]:
             start_date = description[key]['start_date']
             text += 'Начало {} в {} \n'.format(start_date.split(' ')[0], start_date.split(' ')[1][:5])
         if 'finish_date' in description[key]:
-            start_date = description[key]['finish_date']
-            text += 'Окончание в {} \n'.format(start_date.split(' ')[1][:5])
+            finish_date = description[key]['finish_date']
+            text += 'Окончание в {} \n'.format(finish_date.split(' ')[1][:5])
         if 'place' in description[key]:
             address = description[key]['place']
             text += 'Место проведения: {} \n'.format(address)
-        text += 'Cсылка на событие: {} \n'.format(link)
+       
         texts.append(text)
     return texts
 
