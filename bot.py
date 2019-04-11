@@ -5,19 +5,19 @@ import re
 from datetime import datetime
 import time
 import telebot
-import conf
+import tokens
 
 
-token = conf.token
-chat_id = conf.chat_id
+token = tokens.token
+chat_id = tokens.chat_id
 
 
 dir_path = '/home/donkey/rockBot'
 
 bot = telebot.TeleBot(token)
 
-vktoken= conf.vktoken
-personal_token= conf.personal_token
+vktoken= tokens.vktoken
+personal_token= tokens.personal_token
 
 def clean_text(item):
     emoji_pattern = re.compile("["
