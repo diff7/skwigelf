@@ -185,7 +185,7 @@ def mainFunction(words):
 	        for record_to_post in records_to_post:
 	            bot.send_message(chat_id, record_to_post)
 	        logger('Sent messages by bot')
-	        time.sleep(10)
+	    time.sleep(5)
 
 with open(dir_path+'/keywords.txt','r') as f:
     key_words = f.read().split('\n')
