@@ -55,6 +55,26 @@ def clean_text(item):
     return item.replace('\n',' ').replace(']','')
 
 
+def get_last_wall_pic(group_id):
+    url = None
+    group_id = '-'+group_id
+    method='photos.get'
+    r = requests.get('https://api.vk.com/method/'+method,params={'owner_id':group_id,'album_id':'profile','count':1,'rev':1,'access_token':vktoken,'v':5.95})
+    
+    if r.status_code == 200:
+        description=r.json()
+    else: 
+        return url
+    
+    if 'response' in description:
+        try:
+            url=description['response']['items'][0]['sizes'][4]['url']
+        except:
+            pass
+    
+    return url
+
+
 def post_pictures(url):
     if url:
         r = requests.get(url, allow_redirects=True)
@@ -106,8 +126,8 @@ def get_event_descriptions_by_id(group_ids, n = 30):
             time=datetime.utcfromtimestamp(description['response'][idx]['finish_date']).strftime('%Y-%m-%d %H:%M:%S')
             items['finish_date'] = time
     
-        if 'photo_200' in description['response'][idx]:
-            items['photo_200'] = description['response'][idx]['photo_200']
+        
+        items['photo'] = get_last_wall_pic(ids_list[idx])
             
         if 'name' in description['response'][idx]:
             items['name'] = description['response'][idx]['name']
@@ -148,8 +168,8 @@ def make_records(description):
             address = description[key]['place']
             text += 'Место проведения: {} \n'.format(address)
             
-        if 'photo_200' in description[key]:
-            photo_urls.append(description[key]['photo_200'])
+        if 'photo' in description[key]:
+            photo_urls.append(description[key]['photo'])
         else: 
             photo_urls.append(None)
         
