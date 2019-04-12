@@ -14,7 +14,7 @@ token = tokens.token
 chat_id = tokens.chat_id
 
 
-#dir_path = '/home/donkey/rockBot/skwigelf'
+dir_path = '/home/donkey/rockBot/skwigelf'
 #dir_path = './'
 
 bot = telebot.TeleBot(token)
