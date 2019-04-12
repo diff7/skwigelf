@@ -223,7 +223,7 @@ def mainFunction(words):
             logger('Records to post: {} '.format(len(records_to_post)))
             
             for i, record_to_post in enumerate(records_to_post):
-                if images[i]:
+                if images[i] and len(record_to_post) < 1000:
                     post_pictures(images[i], record_to_post)
                 else:
                     bot.send_message(chat_id, record_to_post)
