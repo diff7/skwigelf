@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 import requests
 import re
@@ -60,13 +61,13 @@ def search_for_open_events(querry):
     r = requests.get('https://api.vk.com/method/'+ method,params={'offset':0, 'type':'event','future':1,'count':1000,'city_id': city_id ,'q':querry,'access_token':personal_token,'v':5.52})
     logger(r.status_code)
     if 'response' in r.json():
-	    records = r.json()['response']['items']
-	    print('Found {} events with querry "{}"'.format(len(records), querry))
-	    for item in records:
-	        if item['is_closed'] == 0:
-	            group_ids[item['id']] = item['name']
-	    print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
-	    return group_ids
+        records = r.json()['response']['items']
+        print('Found {} events with querry "{}"'.format(len(records), querry))
+        for item in records:
+            if item['is_closed'] == 0:
+                group_ids[item['id']] = item['name']
+        print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
+        return group_ids
     else:
         logger('Group search error: {}'.format(str(r.json())))
         return group_ids 
@@ -174,18 +175,18 @@ def mainFunction(words):
     for keyword in words:
         group_ids  = search_for_open_events(keyword)
         if len(group_ids) > 0:
-	        logger('Made group ids')
-	        desc = get_event_descriptions_by_id(group_ids, 50)
-	        logger('Recieved descriptions: {}, keyword : {} '.format(len(desc),keyword))
-	        desc = filter_desc(desc)
-	        log_posted(desc)
-	        logger('Filtered records to post: {}, keyword: {} '.format(len(desc), keyword))
-	        records_to_post = make_records(desc)
-	        logger('Records to post: {} '.format(len(records_to_post)))
-	        for record_to_post in records_to_post:
-	            bot.send_message(chat_id, record_to_post)
-	        logger('Sent messages by bot')
-		time.sleep(5)
+            logger('Made group ids')
+            desc = get_event_descriptions_by_id(group_ids, 50)
+            logger('Recieved descriptions: {}, keyword : {} '.format(len(desc),keyword))
+            desc = filter_desc(desc)
+            log_posted(desc)
+            logger('Filtered records to post: {}, keyword: {} '.format(len(desc), keyword))
+            records_to_post = make_records(desc)
+            logger('Records to post: {} '.format(len(records_to_post)))
+            for record_to_post in records_to_post:
+                bot.send_message(chat_id, record_to_post)
+            logger('Sent messages by bot')
+        time.sleep(5)
 
 with open(dir_path+'/keywords.txt','r') as f:
     key_words = f.read().split('\n')
