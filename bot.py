@@ -55,15 +55,19 @@ def search_for_open_events(querry):
     city_id = 1
     group_ids = {}
     method='groups.search'
-    r = requests.get('https://api.vk.com/method/'+method,params={'offset':0, 'type':'event','future':1,'count':1000,'city_id': city_id ,'q':querry,'access_token':personal_token,'v':5.52})
+    r = requests.get('https://api.vk.com/method/'+ method,params={'offset':0, 'type':'event','future':1,'count':1000,'city_id': city_id ,'q':querry,'access_token':personal_token,'v':5.52})
     logger(r.status_code)
-    records = r.json()['response']['items']
-    print('Found {} events with querry "{}"'.format(len(records), querry))
-    for item in records:
-        if item['is_closed'] == 0:
-            group_ids[item['id']] = item['name']
-    print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
-    return group_ids
+    if 'response' in r.json():
+	    records = r.json()['response']['items']
+	    print('Found {} events with querry "{}"'.format(len(records), querry))
+	    for item in records:
+	        if item['is_closed'] == 0:
+	            group_ids[item['id']] = item['name']
+	    print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
+	    return group_ids
+	else: 
+		logger('Group search error: {}'.format(str(r.josn())))
+
 
 
 def get_event_descriptions_by_id(group_ids, n = 30):
