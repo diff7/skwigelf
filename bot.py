@@ -66,7 +66,7 @@ def search_for_open_events(querry):
 	    print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
 	    return group_ids
     else:
-        logger('Group search error: {}'.format(str(r.josn())))
+        logger('Group search error: {}'.format(str(r.json())))
         return group_ids 
 
 
