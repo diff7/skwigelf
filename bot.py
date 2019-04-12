@@ -41,6 +41,7 @@ def clean_text(item):
                 u"\u3030"
                 u"\ufe0f"
     "]+", flags=re.UNICODE)
+    punctuation = re.compile(r"[\?\.\!]+(?=[\?\.\!])")
     hashtags = re.compile("#[A-Za-z0-9-a-яA-я\-\.\_]+")
     item=item.strip()
     item=re.sub(r'http\S+', '', item)
@@ -48,6 +49,7 @@ def clean_text(item):
     item=re.sub(r'\[id(.*?)\|', '', item)
     item = emoji_pattern.sub(r'', item)
     item = hashtags.sub(r'', item)
+    item = punctuation.sub(r'.', item)
 
     return item.replace('\n',' ').replace(']','')
 
