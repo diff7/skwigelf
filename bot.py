@@ -54,6 +54,13 @@ def clean_text(item):
 
     return item.replace('\n',' ').replace(']','')
 
+
+def post_pictures(url):
+    if url:
+        r = requests.get(url, allow_redirects=True)
+        image = r.content
+        bot.send_photo(chat_id, image)
+
 def search_for_open_events(querry):
     city_id = 1
     group_ids = {}
@@ -98,10 +105,15 @@ def get_event_descriptions_by_id(group_ids, n = 30):
         if 'finish_date' in description['response'][idx]:
             time=datetime.utcfromtimestamp(description['response'][idx]['finish_date']).strftime('%Y-%m-%d %H:%M:%S')
             items['finish_date'] = time
+    
+        if 'photo_200' in description['response'][idx]:
+            items['photo_200'] = description['response'][idx]['photo_200']
             
         if 'name' in description['response'][idx]:
             items['name'] = description['response'][idx]['name']
+        
         descriptions[ids_list[idx]] = items
+ 
     return descriptions
 
 
@@ -110,6 +122,7 @@ def make_records(description):
     texts = []
     min_post_len = conf.min_post_len
     max_post_len_sentences = conf.max_post_len_sentences
+    photo_urls = []
     for key in description:
         adress = ''
         start_date = ''
@@ -134,9 +147,14 @@ def make_records(description):
         if 'place' in description[key]:
             address = description[key]['place']
             text += 'Место проведения: {} \n'.format(address)
-       
+            
+        if 'photo_200' in description[key]:
+            photo_urls.append(description[key]['photo_200'])
+        else: 
+            photo_urls.append(None)
+        
         texts.append(text)
-    return texts
+    return texts, photo_urls
 
 def log_posted(desc):
     f=open(dir_path+'/logged_records.log','a')
@@ -181,10 +199,13 @@ def mainFunction(words):
             desc = filter_desc(desc)
             log_posted(desc)
             logger('Filtered records to post: {}, keyword: {} '.format(len(desc), keyword))
-            records_to_post = make_records(desc)
+            records_to_post, images = make_records(desc)
             logger('Records to post: {} '.format(len(records_to_post)))
-            for record_to_post in records_to_post:
+            
+            for i, record_to_post in enumerate(records_to_post):
+                post_pictures(images[i])
                 bot.send_message(chat_id, record_to_post)
+                
             logger('Sent messages by bot')
         time.sleep(5)
 
@@ -195,4 +216,3 @@ key_words = [word for word in  key_words if word !='']
 
 print(key_words,len(key_words))
 mainFunction(key_words)
-
