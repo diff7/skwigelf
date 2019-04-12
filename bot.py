@@ -154,8 +154,8 @@ def make_records(description):
         else:
             text = ''
         
-        text +='{} '.format('.'.join(description[key]['description'].split('.')[:max_post_len_sentences]))
-        text += ' Продолжение по ссылке : {} \n\n'.format(link)
+        text +='{}'.format('.'.join(description[key]['description'].split('.')[:max_post_len_sentences]))
+        text += '... продолжение по ссылке : {} \n\n'.format(link)
         if len(text.split()) < min_post_len:
             continue
         if 'start_date' in description[key]:

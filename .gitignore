@@ -4,3 +4,6 @@ logged_records.log
 *.save
 cronlog.log
 .gitignore
+logged_records.log
+*.pyc
+keywords.txt
