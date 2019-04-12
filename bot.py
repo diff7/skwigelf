@@ -191,5 +191,5 @@ with open(dir_path+'/keywords.txt','r') as f:
 key_words = [word for word in  key_words if word !='']
 
 print(key_words,len(key_words))
-#mainFunction(key_words)
+mainFunction(key_words)
 
