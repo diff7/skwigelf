@@ -65,8 +65,9 @@ def search_for_open_events(querry):
 	            group_ids[item['id']] = item['name']
 	    print('Found {} not closed events with querry "{}"'.format(len(group_ids), querry))
 	    return group_ids
-	else: 
-		logger('Group search error: {}'.format(str(r.josn())))
+    else:
+        logger('Group search error: {}'.format(str(r.josn())))
+        return group_ids 
 
 
 
@@ -190,4 +191,5 @@ with open(dir_path+'/keywords.txt','r') as f:
 key_words = [word for word in  key_words if word !='']
 
 print(key_words,len(key_words))
-mainFunction(key_words)
+#mainFunction(key_words)
+
