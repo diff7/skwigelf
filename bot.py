@@ -14,8 +14,8 @@ token = tokens.token
 chat_id = tokens.chat_id
 
 
-#dir_path = '/home/donkey/rockBot'
-dir_path = './'
+#dir_path = '/home/donkey/rockBot/skwigelf'
+#dir_path = './'
 
 bot = telebot.TeleBot(token)
 
@@ -166,18 +166,19 @@ def logger(message):
 def mainFunction(words):
     for keyword in words:
         group_ids  = search_for_open_events(keyword)
-        logger('Made group ids')
-        desc = get_event_descriptions_by_id(group_ids, 50)
-        logger('Recieved descriptions: {}, keyword : {} '.format(len(desc),keyword))
-        desc = filter_desc(desc)
-        log_posted(desc)
-        logger('Filtered records to post: {}, keyword: {} '.format(len(desc), keyword))
-        records_to_post = make_records(desc)
-        logger('Records to post: {} '.format(len(records_to_post)))
-        for record_to_post in records_to_post:
-            bot.send_message(chat_id, record_to_post)
-        logger('Sent messages by bot')
-        time.sleep(10)
+        if len(group_ids) > 0:
+	        logger('Made group ids')
+	        desc = get_event_descriptions_by_id(group_ids, 50)
+	        logger('Recieved descriptions: {}, keyword : {} '.format(len(desc),keyword))
+	        desc = filter_desc(desc)
+	        log_posted(desc)
+	        logger('Filtered records to post: {}, keyword: {} '.format(len(desc), keyword))
+	        records_to_post = make_records(desc)
+	        logger('Records to post: {} '.format(len(records_to_post)))
+	        for record_to_post in records_to_post:
+	            bot.send_message(chat_id, record_to_post)
+	        logger('Sent messages by bot')
+	        time.sleep(10)
 
 with open(dir_path+'/keywords.txt','r') as f:
     key_words = f.read().split('\n')
