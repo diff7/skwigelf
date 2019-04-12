@@ -75,11 +75,11 @@ def get_last_wall_pic(group_id):
     return url
 
 
-def post_pictures(url):
+def post_pictures(url, caption=None):
     if url:
         r = requests.get(url, allow_redirects=True)
         image = r.content
-        bot.send_photo(chat_id, image)
+        bot.send_photo(chat_id, image, caption=caption)
 
 def search_for_open_events(querry):
     city_id = 1
@@ -223,8 +223,10 @@ def mainFunction(words):
             logger('Records to post: {} '.format(len(records_to_post)))
             
             for i, record_to_post in enumerate(records_to_post):
-                post_pictures(images[i])
-                bot.send_message(chat_id, record_to_post)
+                if images[i]:
+                    post_pictures(images[i], record_to_post)
+                else:
+                    bot.send_message(chat_id, record_to_post)
                 
             logger('Sent messages by bot')
         time.sleep(5)
